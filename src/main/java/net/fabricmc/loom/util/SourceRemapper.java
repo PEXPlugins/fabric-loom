@@ -163,7 +163,7 @@ public class SourceRemapper {
 		});
 
 		Mercury mercury = extension.getOrCreateSrcMercuryCache(toNamed ? 1 : 0, () -> {
-			Mercury m = createMercuryWithClassPath(project, toNamed);
+			Mercury m = createMercuryWithClassPath(project, extension, toNamed);
 
 			for (File file : extension.getUnmappedModCollection()) {
 				Path path = file.toPath();
@@ -199,7 +199,7 @@ public class SourceRemapper {
 		});
 	}
 
-	public static Mercury createMercuryWithClassPath(Project project, boolean toNamed) {
+	public static Mercury createMercuryWithClassPath(Project project, LoomGradleExtension extension, boolean toNamed) {
 		Mercury m = new Mercury();
 
 		for (File file : project.getConfigurations().getByName(Constants.MINECRAFT_DEPENDENCIES).getFiles()) {
@@ -211,7 +211,7 @@ public class SourceRemapper {
 				m.getClassPath().add(file.toPath());
 			}
 		} else {
-			for (RemappedConfigurationEntry entry : Constants.MOD_COMPILE_ENTRIES) {
+			for (RemappedConfigurationEntry entry : extension.getRemappedConfigurations()) {
 				for (File inputFile : project.getConfigurations().getByName(entry.getSourceConfiguration()).getFiles()) {
 					m.getClassPath().add(inputFile.toPath());
 				}

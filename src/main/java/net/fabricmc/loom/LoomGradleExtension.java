@@ -28,6 +28,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -52,6 +53,7 @@ import net.fabricmc.loom.providers.MappingsProvider;
 import net.fabricmc.loom.providers.MinecraftMappedProvider;
 import net.fabricmc.loom.providers.MinecraftProvider;
 import net.fabricmc.loom.util.LoomDependencyManager;
+import net.fabricmc.loom.util.RemappedConfigurationEntry;
 
 public class LoomGradleExtension {
 	public String runDir = "run";
@@ -75,6 +77,8 @@ public class LoomGradleExtension {
 	private JsonObject installerJson;
 	private MappingSet[] srcMappingCache = new MappingSet[2];
 	private Mercury[] srcMercuryCache = new Mercury[2];
+
+	private final List<RemappedConfigurationEntry> remappedConfigurations = new ArrayList<>();
 
 	/**
 	 * Loom will generate a new genSources task (with a new name, based off of {@link LoomDecompiler#name()})
@@ -376,5 +380,18 @@ public class LoomGradleExtension {
 
 	public boolean isShareCaches() {
 		return shareCaches;
+	}
+
+	/**
+	 * Get an unmodifiable list of remapped configurations.
+	 *
+	 * @return configurations to remap
+	 */
+	public List<RemappedConfigurationEntry> getRemappedConfigurations() {
+		return Collections.unmodifiableList(this.remappedConfigurations);
+	}
+
+	void addRemappedConfiguration(RemappedConfigurationEntry entry) {
+		this.remappedConfigurations.add(entry);
 	}
 }
